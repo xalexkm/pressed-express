@@ -1,17 +1,13 @@
-import createError from 'http-errors';
-import express from 'express';
-import path from 'path';
-import cookieParser from 'cookie-parser';
-import logger from 'morgan';
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
 
-import indexRouter from './routes/index.mjs';
-import usersRouter from './routes/users.mjs';
-import {fileURLToPath} from "url";
+const indexRouter = require('./routes/index.js');
+const usersRouter = require('./routes/users.js');
 
-var app = express();
-
-const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
-const __dirname = path.dirname(__filename);
+const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -22,12 +18,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.listen(3000, () => {
-  console.log('Listening on 3000');
-});
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+
+app.listen(3000, () => {
+  console.log('Listening on 3000');
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -45,4 +42,4 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-export default app
+module.exports = app;
