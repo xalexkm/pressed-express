@@ -1,22 +1,30 @@
 import express from 'express';
 import connection from "../client.mjs";
+import logger from "morgan";
+import app from "../app.mjs";
 
 var router = express.Router();
 
+router.use(logger('dev'));
+
 /* GET users listing. */
 
-function getDataFromDb() {
+async function getAllUsers() {
   try {
-    const res = connection.query('SELECT * FROM `users`');
+    const [res, col] = await connection.query('SELECT * FROM `users`');
     console.log(res);
-    return results;
+    return res;
   } catch (err) {
     console.error(err);
   }
 }
 
-router.get('/', function(req, res, next) {
-  res.send('Nothing');
+router.get('/', async function(req, res, next) {
+  const data = await getAllUsers();
+  res.send(data);
 });
+
+router.put('/', async function() {
+})
 
 export default router
