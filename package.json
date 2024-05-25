@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon app.js",
+    "start": "nodemon server.js",
     "test": "jest",
     "db:start": "docker-compose up -d",
     "db:stop": "docker-compose down",
