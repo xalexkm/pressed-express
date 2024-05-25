@@ -39,9 +39,11 @@ router.put('/', async function(req, res, next) {
       return res.status(400).json({ error: 'Name and email are required.' });
     }
 
+    await addUser(name, email);
+
     return res.status(200).json({
-      name: name,
-      email: email
+      name,
+      email,
     });
   } catch (err) {
     console.error(err);
