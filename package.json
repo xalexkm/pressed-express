@@ -5,6 +5,7 @@
   "scripts": {
     "start": "nodemon server.js",
     "test": "jest",
+    "test:watch": "jest --watchAll",
     "db:start": "docker-compose up -d",
     "db:stop": "docker-compose down",
     "db:reset": "docker-compose down && docker-compose up -d"
@@ -21,10 +22,12 @@
   },
   "devDependencies": {
     "@babel/preset-env": "^7.24.6",
-    "@babel/preset-modules": "^0.1.6",
+    "@eslint/js": "^9.3.0",
     "@faker-js/faker": "^8.4.1",
+    "@jest/globals": "^29.7.0",
     "@types/node": "^20.12.12",
-    "babel-cli": "^6.26.0",
+    "eslint": "9.x",
+    "globals": "^15.3.0",
     "jest": "^29.7.0",
     "nodemon": "^3.1.0",
     "superagent": "^9.0.2",
