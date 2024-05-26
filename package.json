@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "start": "nodemon server.js",
-    "test": "jest",
-    "test:watch": "jest --watchAll",
+    "test": "jest --silent --no-cache --forceExit",
+    "test:watch": "jest --no-cache --watchAll",
     "db:start": "docker-compose up -d",
     "db:stop": "docker-compose down",
     "db:reset": "docker-compose down && docker-compose up -d"
