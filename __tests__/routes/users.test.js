@@ -1,8 +1,9 @@
 const request = require('supertest');
+const mockedApp = require("../../app");
 
-describe('test the users route', () => {
+describe('test the users route GET method', () => {
     afterEach(() => {
-        jest.resetModules(); // Reset modules to ensure fresh mock setup
+        jest.resetModules();
     });
 
     test('should respond to GET method', async () => {
@@ -61,3 +62,47 @@ describe('test the users route', () => {
         expect(response.body).toEqual({ error: 'Internal Server Error' });
     });
 });
+
+describe('test the users route PUT method', () => {
+    const userData = {
+        name: 'Alice',
+        email: 'alice@example.com',
+    }
+
+    afterEach(() => {
+        jest.resetModules();
+    });
+
+    test('should return the passed object back when successful', async () => {
+        jest.doMock('../../clients/users', () => ({
+            addUser: jest.fn(),
+        }));
+
+        const mockedApp = require('../../app');
+        const response = await request(mockedApp).put('/users').send(userData);
+
+        expect(response.body).toEqual(userData);
+    });
+
+    test('should return 500 on error', async () => {
+        jest.doMock('../../clients/users', () => ({
+            addUser: jest.fn().mockRejectedValue(new Error('Database error')),
+        }));
+
+        const mockedApp = require('../../app');
+        const response = await request(mockedApp).put('/users').send(userData);
+
+        expect(response.statusCode).toBe(500);
+    });
+
+    test('should return 200 on success', async () => {
+        jest.doMock('../../clients/users', () => ({
+            addUser: jest.fn(),
+        }));
+
+        const mockedApp = require('../../app');
+        const response = await request(mockedApp).put('/users').send(userData);
+
+        expect(response.statusCode).toBe(200);
+    });
+})

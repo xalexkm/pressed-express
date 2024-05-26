@@ -9,7 +9,6 @@ router.use(logger('dev'));
 router.get('/', async function(req, res, next) {
   try {
     const data = await getAllUsers();
-    console.log(data);
     res.send(data);
   } catch (err) {
     console.error(err);
