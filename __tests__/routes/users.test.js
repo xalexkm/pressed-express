@@ -1,5 +1,4 @@
 const request = require('supertest');
-const mockedApp = require("../../app");
 
 describe('test the users route GET method', () => {
     afterEach(() => {
