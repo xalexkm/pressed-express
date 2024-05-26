@@ -1,9 +1,63 @@
 const request = require('supertest');
-const app  = require('../../app.js');
 
-describe('test the app', () => {
-    test('should respond to GET method', async () => {
-        const users = await request(app).get('/users');
-        expect(users.statusCode).toBe(200);
+describe('test the users route', () => {
+    afterEach(() => {
+        jest.resetModules(); // Reset modules to ensure fresh mock setup
     });
-})
+
+    test('should respond to GET method', async () => {
+        const mockedApp = require('../../app');
+        const response = await request(mockedApp).get('/users');
+
+        expect(response.statusCode).toBe(200);
+    });
+
+    test('should return a list of users', async () => {
+        jest.doMock('../../clients/users', () => ({
+            getAllUsers: jest.fn().mockReturnValue([
+                {
+                    "id": 1,
+                    "name": "Alice",
+                    "email": "alice@example.com",
+                    "created_at": "2024-05-24T16:44:11.000Z"
+                },
+                {
+                    "id": 2,
+                    "name": "Bob",
+                    "email": "bob@example.com",
+                    "created_at": "2024-05-24T16:44:11.000Z"
+                }
+            ]),
+        }));
+
+        const mockedApp = require('../../app.js'); // Re-import app after module reset and mock setup
+        const response = await request(mockedApp).get('/users');
+
+        expect(response.body).toEqual([
+            {
+                "id": 1,
+                "name": "Alice",
+                "email": "alice@example.com",
+                "created_at": "2024-05-24T16:44:11.000Z"
+            },
+            {
+                "id": 2,
+                "name": "Bob",
+                "email": "bob@example.com",
+                "created_at": "2024-05-24T16:44:11.000Z"
+            }
+        ]);
+    });
+
+    test('should return 500 on error', async () => {
+        jest.doMock('../../clients/users', () => ({
+            getAllUsers: jest.fn().mockRejectedValue(new Error('Database error')),
+        }));
+
+        const mockedApp = require('../../app');
+        const response = await request(mockedApp).get('/users');
+
+        expect(response.statusCode).toBe(500);
+        expect(response.body).toEqual({ error: 'Internal Server Error' });
+    });
+});

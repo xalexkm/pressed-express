@@ -1,34 +1,21 @@
-const express = require('express');
-const pool = require('../client.js');
+const { Router } = require('express');
 const logger = require('morgan');
+const { addUser, getAllUsers} = require('../clients/users');
 
-const router = express.Router();
+const router = new Router();
 
 router.use(logger('dev'));
 
-async function getAllUsers() {
-  try {
-    const connection = await pool();
-    const [res,] = await connection.query('SELECT * FROM `users`');
-    return res;
-  } catch (err) {
-    console.error(err);
-  }
-}
-
-async function addUser(name, email) {
-  try {
-    const connection = await pool();
-    const [res,] = await connection.query('INSERT INTO users (name, email) VALUES (?, ?)', [name, email]);
-    return res;
-  } catch (err) {
-    console.error(err);
-  }
-}
-
 router.get('/', async function(req, res, next) {
-  const data = await getAllUsers();
-  res.send(data);
+  try {
+    const data = await getAllUsers();
+    console.log(data);
+    res.send(data);
+  } catch (err) {
+    console.error(err);
+    // Send generic error message and status code
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
 });
 
 router.put('/', async function(req, res, next) {
