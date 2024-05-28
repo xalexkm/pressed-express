@@ -1,4 +1,5 @@
 const request = require('supertest');
+const mockedApp = require("../../app");
 
 describe('test the users route GET method', () => {
     afterEach(() => {
@@ -103,5 +104,34 @@ describe('test the users route PUT method', () => {
         const response = await request(mockedApp).put('/users').send(userData);
 
         expect(response.statusCode).toBe(200);
+    });
+
+    test('should return 400 on missing body', async () => {
+        jest.doMock('../../clients/users', () => ({
+            addUser: jest.fn(),
+        }));
+
+        const mockedApp = require('../../app');
+        const response = await request(mockedApp).put('/users').send();
+
+        expect(response.statusCode).toBe(400);
+        expect(response.body).toEqual({ error: 'Name and email failed to validate. Try different values.' });
+    });
+
+    test('should return 400 on invalid email', async () => {
+        const wrongBody = {
+            name: 'Alice',
+            email: 'aliceexample.com',
+        }
+
+        jest.doMock('../../clients/users', () => ({
+            addUser: jest.fn(),
+        }));
+
+        const mockedApp = require('../../app');
+        const response = await request(mockedApp).put('/users').send();
+
+        expect(response.statusCode).toBe(400);
+        expect(response.body).toEqual({ error: 'Name and email failed to validate. Try different values.' });
     });
 })
